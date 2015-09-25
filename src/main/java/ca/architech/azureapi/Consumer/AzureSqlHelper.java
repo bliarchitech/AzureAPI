@@ -70,6 +70,11 @@ public class AzureSqlHelper {
     }
 
     public static void insertData(Connection connection, String azureDBName, List<Temperature> list) {
+        if (list.size() == 0) {
+            System.out.println("List is EMPTY!");
+            return;
+        }
+
         Statement statement = null;
 
         try {

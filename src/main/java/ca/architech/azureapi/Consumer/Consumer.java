@@ -1,6 +1,5 @@
 package ca.architech.azureapi.Consumer;
 
-import ca.architech.azureapi.Application;
 import ca.architech.azureapi.Model.Temperature;
 import ca.architech.azureapi.Setup.AzureSqlSetup;
 import com.microsoft.windowsazure.exception.ServiceException;
@@ -62,6 +61,71 @@ public class Consumer {
         }
 
         return list;
+    }
+
+    public static List<Temperature> ServiceBusTopicUnSubscribe(ServiceBusContract service,
+                                                               TopicInfo topicInfo, String subscriptName) {
+        List<Temperature> list = new ArrayList<Temperature>();
+
+        try {
+            ReceiveMessageOptions opts = ReceiveMessageOptions.DEFAULT;
+            opts.setReceiveMode(ReceiveMode.PEEK_LOCK);
+
+            while (true) {
+                ReceiveSubscriptionMessageResult resultSubMsg = service.receiveSubscriptionMessage(
+                        topicInfo.getPath(), subscriptName, opts);
+
+                BrokeredMessage message = resultSubMsg.getValue();
+                if (message != null && message.getMessageId() != null) {
+                    byte[] b = new byte[200];
+                    String s = null;
+                    int numRead = message.getBody().read(b);
+                    while (-1 != numRead) {
+                        s = new String(b);
+                        s = s.trim();
+                        numRead = message.getBody().read(b);
+                    }
+
+                    Temperature data = new Temperature();
+                    data.setId(Integer.parseInt(message.getProperty("ID").toString()));
+                    data.setValue(message.getProperty("Value").toString());
+                    data.setX(message.getProperty("X").toString());
+                    data.setY(message.getProperty("Y").toString());
+                    data.setZ(message.getProperty("Z").toString());
+
+                    list.add(data);
+                    service.deleteMessage(message);
+
+                    System.out.println("Message" + data.getId() + " Unsubscribed.");
+                }
+                else {
+                    break;
+                }
+            }
+        }
+        catch (ServiceException e) {
+            System.out.print("ServiceException encountered: ");
+            System.out.println(e.getMessage());
+            System.exit(-1);
+        }
+        catch (Exception e) {
+            System.out.print("Generic exception encountered: ");
+            System.out.println(e.getMessage());
+            System.exit(-1);
+        }
+
+        return list;
+    }
+
+    public static void DeleteSubscription(ServiceBusContract service, TopicInfo topicInfo, String subscriptName) {
+        try {
+            service.deleteSubscription(topicInfo.getPath(), subscriptName);
+        }
+        catch (ServiceException e) {
+            System.out.print("ServiceException encountered: ");
+            System.out.println(e.getMessage());
+            System.exit(-1);
+        }
     }
 
     public static void DatabaseManipulation(List<Temperature> list) {
