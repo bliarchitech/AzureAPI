@@ -70,4 +70,49 @@ public class ServiceBusSetup {
             System.exit(-1);
         }
     }
+
+    public static TopicInfo CreateServiceBusTopic(ServiceBusContract service) {
+        TopicInfo topicInfo = new TopicInfo(Application.topicName);
+        long maxSizeInMegabytes = 5120;
+        topicInfo.setMaxSizeInMegabytes(maxSizeInMegabytes);
+
+        try
+        {
+            //CreateTopicResult result = service.createTopic(topicInfo);
+            service.createTopic(topicInfo);
+        }
+        catch (ServiceException e) {
+            System.out.print("ServiceException encountered: ");
+            System.out.println(e.getMessage());
+            System.exit(-1);
+        }
+
+        return topicInfo;
+    }
+
+    public static TopicInfo GetServiceBusTopic(ServiceBusContract service) {
+        TopicInfo topicInfo = null;
+
+        try {
+            topicInfo = service.getTopic(Application.topicName).getValue();
+        }
+        catch (ServiceException e) {
+            System.out.print("ServiceException encountered: ");
+            System.out.println(e.getMessage());
+            System.exit(-1);
+        }
+
+        return topicInfo;
+    }
+
+    public static void DeleteServiceBusTopic(ServiceBusContract service, TopicInfo topicInfo) {
+        try {
+            service.deleteTopic(topicInfo.getPath());
+        }
+        catch (ServiceException e) {
+            System.out.print("ServiceException encountered: ");
+            System.out.println(e.getMessage());
+            System.exit(-1);
+        }
+    }
 }
