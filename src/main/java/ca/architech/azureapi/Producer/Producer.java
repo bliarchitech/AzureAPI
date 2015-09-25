@@ -3,8 +3,7 @@ package ca.architech.azureapi.Producer;
 import ca.architech.azureapi.Model.Temperature;
 import com.microsoft.windowsazure.exception.ServiceException;
 import com.microsoft.windowsazure.services.servicebus.ServiceBusContract;
-import com.microsoft.windowsazure.services.servicebus.models.BrokeredMessage;
-import com.microsoft.windowsazure.services.servicebus.models.QueueInfo;
+import com.microsoft.windowsazure.services.servicebus.models.*;
 
 import java.util.List;
 
@@ -29,5 +28,47 @@ public class Producer {
             System.out.println(e.getMessage());
             System.exit(-1);
         }
+    }
+
+    public static SubscriptionInfo CreateSubscriptionDefault(ServiceBusContract service,
+                                                             TopicInfo topicInfo, String subscriptName) {
+        SubscriptionInfo subscriptInfo = null;
+
+        try {
+            subscriptInfo = new SubscriptionInfo(subscriptName);
+            //CreateSubscriptionResult result = service.createSubscription(topicInfo.getPath(), subscriptionInfo);
+            service.createSubscription(topicInfo.getPath(), subscriptInfo);
+        }
+        catch (ServiceException e) {
+            System.out.print("ServiceException encountered: ");
+            System.out.println(e.getMessage());
+            System.exit(-1);
+        }
+
+        return subscriptInfo;
+    }
+
+    public static SubscriptionInfo CreateSubscriptionWithRules(ServiceBusContract service, TopicInfo topicInfo,
+                                                               String subscriptName, String ruleName, String ruleExpression) {
+        SubscriptionInfo subscriptInfo = null;
+
+        try {
+            subscriptInfo = new SubscriptionInfo(subscriptName);
+            //CreateSubscriptionResult result = service.createSubscription(topicInfo.getPath(), subscriptionInfo);
+            service.createSubscription(topicInfo.getPath(), subscriptInfo);
+
+            RuleInfo ruleInfo = new RuleInfo(ruleName);
+            ruleInfo = ruleInfo.withSqlExpressionFilter(ruleExpression);
+            //CreateRuleResult ruleResult = service.createRule(topicInfo.getPath(), subscriptName, ruleInfo);
+            service.createRule(topicInfo.getPath(), subscriptName, ruleInfo);
+            service.deleteRule(topicInfo.getPath(), subscriptName, "$Default");
+        }
+        catch (ServiceException e) {
+            System.out.print("ServiceException encountered: ");
+            System.out.println(e.getMessage());
+            System.exit(-1);
+        }
+
+        return subscriptInfo;
     }
 }

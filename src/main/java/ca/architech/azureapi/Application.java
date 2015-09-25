@@ -14,6 +14,7 @@ public class Application {
 
     public static String queueName = "ServiceBusQueue";
     public static String topicName = "ServiceBusTopic";
+    public static String subscriptionName = "";
 
     public static void main(String[] args) {
         System.out.println("Hello Azure");
