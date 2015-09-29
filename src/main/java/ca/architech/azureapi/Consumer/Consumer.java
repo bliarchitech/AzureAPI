@@ -9,8 +9,12 @@ import com.microsoft.windowsazure.services.servicebus.models.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Consumer {
+
+    private static final Logger logger = Logger.getLogger(Consumer.class.getName());
+
     public static List<Temperature> ServiceBusDeQueue(ServiceBusContract service, QueueInfo queueInfo) {
         List<Temperature> list = new ArrayList<Temperature>();
 
@@ -42,7 +46,7 @@ public class Consumer {
                     list.add(data);
                     service.deleteMessage(message);
 
-                    System.out.println("Message" + data.getId() + " Dequeued.");
+                    logger.info("Message" + data.getId() + " Dequeued.");
                 }
                 else {
                     break;
@@ -50,13 +54,11 @@ public class Consumer {
             }
         }
         catch (ServiceException e) {
-            System.out.print("ServiceException encountered: ");
-            System.out.println(e.getMessage());
+            logger.warning("ServiceException encountered: \n" + e.getMessage());
             System.exit(-1);
         }
         catch (Exception e) {
-            System.out.print("Generic exception encountered: ");
-            System.out.println(e.getMessage());
+            logger.warning("Generic exception encountered: \n" + e.getMessage());
             System.exit(-1);
         }
 
@@ -96,7 +98,7 @@ public class Consumer {
                     list.add(data);
                     service.deleteMessage(message);
 
-                    System.out.println("Message" + data.getId() + " Unsubscribed.");
+                    logger.info("Message" + data.getId() + " Unsubscribed.");
                 }
                 else {
                     break;
@@ -104,13 +106,11 @@ public class Consumer {
             }
         }
         catch (ServiceException e) {
-            System.out.print("ServiceException encountered: ");
-            System.out.println(e.getMessage());
+            logger.warning("ServiceException encountered: \n" + e.getMessage());
             System.exit(-1);
         }
         catch (Exception e) {
-            System.out.print("Generic exception encountered: ");
-            System.out.println(e.getMessage());
+            logger.warning("Generic exception encountered: \n" + e.getMessage());
             System.exit(-1);
         }
 
@@ -122,8 +122,7 @@ public class Consumer {
             service.deleteSubscription(topicInfo.getPath(), subscriptName);
         }
         catch (ServiceException e) {
-            System.out.print("ServiceException encountered: ");
-            System.out.println(e.getMessage());
+            logger.warning("ServiceException encountered: \n" + e.getMessage());
             System.exit(-1);
         }
     }

@@ -9,7 +9,12 @@ import com.microsoft.windowsazure.services.servicebus.ServiceBusService;
 import com.microsoft.windowsazure.services.servicebus.models.QueueInfo;
 import com.microsoft.windowsazure.services.servicebus.models.TopicInfo;
 
+import java.util.logging.Logger;
+
 public class ServiceBusSetup {
+
+    private static final Logger logger = Logger.getLogger(ServiceBusSetup.class.getName());
+
     public static ServiceBusContract ServiceBusInit() {
         String azureNamespace = "bli-servicebus";
         String azureAccessKey = "RootManageSharedAccessKey";
@@ -37,8 +42,7 @@ public class ServiceBusSetup {
             service.createQueue(queueInfo);
         }
         catch (ServiceException e) {
-            System.out.print("ServiceException encountered: ");
-            System.out.println(e.getMessage());
+            logger.warning("ServiceException encountered: \n" + e.getMessage());
             System.exit(-1);
         }
 
@@ -52,8 +56,7 @@ public class ServiceBusSetup {
             queueInfo = service.getQueue(Application.queueName).getValue();
         }
         catch (ServiceException e) {
-            System.out.print("ServiceException encountered: ");
-            System.out.println(e.getMessage());
+            logger.warning("ServiceException encountered: \n" + e.getMessage());
             System.exit(-1);
         }
 
@@ -65,8 +68,7 @@ public class ServiceBusSetup {
             service.deleteQueue(queueInfo.getPath());
         }
         catch (ServiceException e) {
-            System.out.print("ServiceException encountered: ");
-            System.out.println(e.getMessage());
+            logger.warning("ServiceException encountered: \n" + e.getMessage());
             System.exit(-1);
         }
     }
@@ -76,14 +78,12 @@ public class ServiceBusSetup {
         long maxSizeInMegabytes = 5120;
         topicInfo.setMaxSizeInMegabytes(maxSizeInMegabytes);
 
-        try
-        {
+        try {
             //CreateTopicResult result = service.createTopic(topicInfo);
             service.createTopic(topicInfo);
         }
         catch (ServiceException e) {
-            System.out.print("ServiceException encountered: ");
-            System.out.println(e.getMessage());
+            logger.warning("ServiceException encountered: \n" + e.getMessage());
             System.exit(-1);
         }
 
@@ -97,8 +97,7 @@ public class ServiceBusSetup {
             topicInfo = service.getTopic(Application.topicName).getValue();
         }
         catch (ServiceException e) {
-            System.out.print("ServiceException encountered: ");
-            System.out.println(e.getMessage());
+            logger.warning("ServiceException encountered: \n" + e.getMessage());
             System.exit(-1);
         }
 
@@ -110,8 +109,7 @@ public class ServiceBusSetup {
             service.deleteTopic(topicInfo.getPath());
         }
         catch (ServiceException e) {
-            System.out.print("ServiceException encountered: ");
-            System.out.println(e.getMessage());
+            logger.warning("ServiceException encountered: \n" + e.getMessage());
             System.exit(-1);
         }
     }

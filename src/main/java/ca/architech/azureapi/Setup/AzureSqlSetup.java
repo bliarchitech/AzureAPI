@@ -3,8 +3,12 @@ package ca.architech.azureapi.Setup;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 public class AzureSqlSetup {
+
+    private static final Logger logger = Logger.getLogger(AzureSqlSetup.class.getName());
+
     public static String getConnectionString() {
         String azureSqlServer = "f2i97u0mme.database.windows.net:1433";
         String azureSqlDatabase = "bli-database";
@@ -33,18 +37,15 @@ public class AzureSqlSetup {
             Class.forName(azureSqlDriver);
             connection = DriverManager.getConnection(AzureSqlSetup.getConnectionString());
         }
-        catch (ClassNotFoundException cnfe)
-        {
-            System.out.println("ClassNotFoundException " +
-                    cnfe.getMessage());
+        catch (ClassNotFoundException cnfe) {
+            logger.warning("ClassNotFoundException " + cnfe.getMessage());
         }
-        catch (Exception e)
-        {
-            System.out.println("Exception " + e.getMessage());
+        catch (Exception e) {
+            logger.warning("Exception " + e.getMessage());
             e.printStackTrace();
         }
 
-        System.out.println("Database Connected.");
+        logger.info("Database Connected.");
 
         return connection;
     }
@@ -54,10 +55,10 @@ public class AzureSqlSetup {
             if (null != connection) connection.close();
         }
         catch (SQLException sqlException) {
-            System.out.println(sqlException.getMessage());
+            logger.warning("SQL Exception " + sqlException.getMessage());
             sqlException.printStackTrace();
         }
 
-        System.out.println("Database Disconnected.");
+        logger.info("Database Disconnected.");
     }
 }

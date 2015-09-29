@@ -6,8 +6,12 @@ import com.microsoft.windowsazure.services.servicebus.ServiceBusContract;
 import com.microsoft.windowsazure.services.servicebus.models.*;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Producer {
+
+    private static final Logger logger = Logger.getLogger(Producer.class.getName());
+
     public static void ServiceBusEnQueue(ServiceBusContract service, QueueInfo queueInfo) {
         List<Temperature> list = XmlHandler.TemperatureList();
         try {
@@ -20,12 +24,11 @@ public class Producer {
                 message.setProperty("Z", list.get(i).getZ());
                 service.sendQueueMessage(queueInfo.getPath(), message);
 
-                System.out.println("Message" + list.get(i).getId() + " Enqueued.");
+                logger.info("Message" + list.get(i).getId() + " Enqueued.");
             }
         }
         catch (ServiceException e) {
-            System.out.print("ServiceException encountered: ");
-            System.out.println(e.getMessage());
+            logger.warning("ServiceException encountered: \n" + e.getMessage());
             System.exit(-1);
         }
     }
@@ -43,12 +46,11 @@ public class Producer {
                 message.setProperty("Z", list.get(i).getZ());
                 service.sendTopicMessage(topicInfo.getPath(), message);
 
-                System.out.println("Message" + list.get(i).getId() + " Subscribed.");
+                logger.info("Message" + list.get(i).getId() + " Subscribed.");
             }
         }
         catch (ServiceException e) {
-            System.out.print("ServiceException encountered: ");
-            System.out.println(e.getMessage());
+            logger.warning("ServiceException encountered: \n" + e.getMessage());
             System.exit(-1);
         }
     }
@@ -63,8 +65,7 @@ public class Producer {
             service.createSubscription(topicInfo.getPath(), subscriptInfo);
         }
         catch (ServiceException e) {
-            System.out.print("ServiceException encountered: ");
-            System.out.println(e.getMessage());
+            logger.warning("ServiceException encountered: \n" + e.getMessage());
             System.exit(-1);
         }
 
@@ -87,8 +88,7 @@ public class Producer {
             service.deleteRule(topicInfo.getPath(), subscriptName, "$Default");
         }
         catch (ServiceException e) {
-            System.out.print("ServiceException encountered: ");
-            System.out.println(e.getMessage());
+            logger.warning("ServiceException encountered: \n" + e.getMessage());
             System.exit(-1);
         }
 

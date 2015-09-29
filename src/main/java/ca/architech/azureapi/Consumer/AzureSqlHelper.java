@@ -7,8 +7,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class AzureSqlHelper {
+
+    private static final Logger logger = Logger.getLogger(AzureSqlHelper.class.getName());
+
     public static void createTable(Connection connection, String azureDBName) {
         Statement statement = null;
 
@@ -25,10 +29,10 @@ public class AzureSqlHelper {
 
             statement.executeUpdate(sqlString);
 
-            System.out.println("Table " + azureDBName + " Created.");
+            logger.info("Table " + azureDBName + " Created.");
         }
         catch (Exception e) {
-            System.out.println("Exception " + e.getMessage());
+            logger.warning("Exception " + e.getMessage());
             e.printStackTrace();
         }
         finally {
@@ -36,7 +40,7 @@ public class AzureSqlHelper {
                 if (null != statement) statement.close();
             }
             catch (SQLException sqlException) {
-                System.out.println(sqlException.getMessage());
+                logger.warning("SQL Exception " + sqlException.getMessage());
                 sqlException.printStackTrace();
             }
         }
@@ -52,10 +56,10 @@ public class AzureSqlHelper {
 
             statement.executeUpdate(sqlString);
 
-            System.out.println("Table " + azureDBName + " Dropped.");
+            logger.info("Table " + azureDBName + " Dropped.");
         }
         catch (Exception e) {
-            System.out.println("Exception " + e.getMessage());
+            logger.warning("Exception " + e.getMessage());
             e.printStackTrace();
         }
         finally {
@@ -63,7 +67,7 @@ public class AzureSqlHelper {
                 if (null != statement) statement.close();
             }
             catch (SQLException sqlException) {
-                System.out.println(sqlException.getMessage());
+                logger.warning("SQL Exception " + sqlException.getMessage());
                 sqlException.printStackTrace();
             }
         }
@@ -71,7 +75,7 @@ public class AzureSqlHelper {
 
     public static void insertData(Connection connection, String azureDBName, List<Temperature> list) {
         if (list.size() == 0) {
-            System.out.println("List is EMPTY!");
+            logger.info("List is EMPTY!");
             return;
         }
 
@@ -101,11 +105,10 @@ public class AzureSqlHelper {
 
             statement.executeUpdate(sqlString);
 
-            System.out.println("Data Inserted.");
+            logger.info("Data Inserted.");
         }
-        catch (Exception e)
-        {
-            System.out.println("Exception " + e.getMessage());
+        catch (Exception e) {
+            logger.warning("Exception " + e.getMessage());
             e.printStackTrace();
         }
         finally {
@@ -113,7 +116,7 @@ public class AzureSqlHelper {
                 if (null != statement) statement.close();
             }
             catch (SQLException sqlException) {
-                System.out.println(sqlException.getMessage());
+                logger.warning("SQL Exception " + sqlException.getMessage());
                 sqlException.printStackTrace();
             }
         }
@@ -136,18 +139,14 @@ public class AzureSqlHelper {
                 String y = resultSet.getString("Y");
                 String z = resultSet.getString("Z");
 
-                System.out.print("ID: " + id);
-                System.out.print(", Value: " + value);
-                System.out.print(", X: " + x);
-                System.out.print(", Y: " + y);
-                System.out.println(", Z: " + z);
+                logger.info("ID: " + id + ", Value: " + value +
+                        ", X: " + x + ", Y: " + y + ", Z: " + z);
             }
 
-            System.out.println("Get All Data.");
+            logger.info("Get All Data.");
         }
-        catch (Exception e)
-        {
-            System.out.println("Exception " + e.getMessage());
+        catch (Exception e) {
+            logger.info("Exception " + e.getMessage());
             e.printStackTrace();
         }
         finally {
@@ -156,7 +155,7 @@ public class AzureSqlHelper {
                 if (null != resultSet) resultSet.close();
             }
             catch (SQLException sqlException) {
-                System.out.println(sqlException.getMessage());
+                logger.warning("SQL Exception " + sqlException.getMessage());
                 sqlException.printStackTrace();
             }
         }
@@ -180,18 +179,14 @@ public class AzureSqlHelper {
                 String y = resultSet.getString("Y");
                 String z = resultSet.getString("Z");
 
-                System.out.print("ID: " + id);
-                System.out.print(", Value: " + value);
-                System.out.print(", X: " + x);
-                System.out.print(", Y: " + y);
-                System.out.println(", Z: " + z);
+                logger.info("ID: " + id + ", Value: " + value +
+                        ", X: " + x + ", Y: " + y + ", Z: " + z);
             }
 
-            System.out.println("Get Data.");
+            logger.info("Get Data.");
         }
-        catch (Exception e)
-        {
-            System.out.println("Exception " + e.getMessage());
+        catch (Exception e) {
+            logger.info("Exception " + e.getMessage());
             e.printStackTrace();
         }
         finally {
@@ -200,7 +195,7 @@ public class AzureSqlHelper {
                 if (null != resultSet) resultSet.close();
             }
             catch (SQLException sqlException) {
-                System.out.println(sqlException.getMessage());
+                logger.warning("SQL Exception " + sqlException.getMessage());
                 sqlException.printStackTrace();
             }
         }
@@ -217,11 +212,10 @@ public class AzureSqlHelper {
 
             statement.executeUpdate(sqlString);
 
-            System.out.println("Data Updated.");
+            logger.info("Data Updated.");
         }
-        catch (Exception e)
-        {
-            System.out.println("Exception " + e.getMessage());
+        catch (Exception e) {
+            logger.warning("Exception " + e.getMessage());
             e.printStackTrace();
         }
         finally {
@@ -229,7 +223,7 @@ public class AzureSqlHelper {
                 if (null != statement) statement.close();
             }
             catch (SQLException sqlException) {
-                System.out.println(sqlException.getMessage());
+                logger.warning("SQL Exception " + sqlException.getMessage());
                 sqlException.printStackTrace();
             }
         }
@@ -246,11 +240,10 @@ public class AzureSqlHelper {
 
             statement.executeUpdate(sqlString);
 
-            System.out.println("Data Deleted.");
+            logger.info("Data Deleted.");
         }
-        catch (Exception e)
-        {
-            System.out.println("Exception " + e.getMessage());
+        catch (Exception e) {
+            logger.warning("Exception " + e.getMessage());
             e.printStackTrace();
         }
         finally {
@@ -258,7 +251,7 @@ public class AzureSqlHelper {
                 if (null != statement) statement.close();
             }
             catch (SQLException sqlException) {
-                System.out.println(sqlException.getMessage());
+                logger.warning("SQL Exception " + sqlException.getMessage());
                 sqlException.printStackTrace();
             }
         }
@@ -274,11 +267,10 @@ public class AzureSqlHelper {
 
             statement.executeUpdate(sqlString);
 
-            System.out.println("All Data Deleted.");
+            logger.info("All Data Deleted.");
         }
-        catch (Exception e)
-        {
-            System.out.println("Exception " + e.getMessage());
+        catch (Exception e) {
+            logger.warning("Exception " + e.getMessage());
             e.printStackTrace();
         }
         finally {
@@ -286,7 +278,7 @@ public class AzureSqlHelper {
                 if (null != statement) statement.close();
             }
             catch (SQLException sqlException) {
-                System.out.println(sqlException.getMessage());
+                logger.warning("SQL Exception " + sqlException.getMessage());
                 sqlException.printStackTrace();
             }
         }
