@@ -2,10 +2,7 @@ package ca.architech.azureapi.Consumer;
 
 import ca.architech.azureapi.Model.Temperature;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -14,20 +11,17 @@ public class AzureSqlHelper {
     private static final Logger logger = Logger.getLogger(AzureSqlHelper.class.getName());
 
     public static void createTable(Connection connection, String azureDBName) {
-        Statement statement = null;
-
         try {
-            statement = connection.createStatement();
-
             String sqlString =
-                            "CREATE TABLE " + azureDBName +" (" +
+                            "CREATE TABLE " + azureDBName + " (" +
                             "[ID] [int] IDENTITY(1,1) NOT NULL," +
                             "[VAL] [nvarchar](50) NOT NULL," +
                             "[X] [nvarchar](50) NOT NULL," +
                             "[Y] [nvarchar](50) NOT NULL," +
                             "[Z] [nvarchar](50) NOT NULL" + ")";
 
-            statement.executeUpdate(sqlString);
+            PreparedStatement pstmt = connection.prepareStatement(sqlString);
+            pstmt.executeUpdate();
 
             logger.info("Table " + azureDBName + " Created.");
         }
@@ -35,41 +29,20 @@ public class AzureSqlHelper {
             logger.warning("Exception " + e.getMessage());
             e.printStackTrace();
         }
-        finally {
-            try {
-                if (null != statement) statement.close();
-            }
-            catch (SQLException sqlException) {
-                logger.warning("SQL Exception " + sqlException.getMessage());
-                sqlException.printStackTrace();
-            }
-        }
     }
 
     public static void dropTable(Connection connection, String azureDBName) {
-        Statement statement = null;
-
         try {
-            statement = connection.createStatement();
-
             String sqlString = "DROP TABLE " + azureDBName;
 
-            statement.executeUpdate(sqlString);
+            PreparedStatement pstmt = connection.prepareStatement(sqlString);
+            pstmt.executeUpdate();
 
             logger.info("Table " + azureDBName + " Dropped.");
         }
         catch (Exception e) {
             logger.warning("Exception " + e.getMessage());
             e.printStackTrace();
-        }
-        finally {
-            try {
-                if (null != statement) statement.close();
-            }
-            catch (SQLException sqlException) {
-                logger.warning("SQL Exception " + sqlException.getMessage());
-                sqlException.printStackTrace();
-            }
         }
     }
 
@@ -79,11 +52,7 @@ public class AzureSqlHelper {
             return;
         }
 
-        Statement statement = null;
-
         try {
-            statement = connection.createStatement();
-
             String sqlString =
                             "SET IDENTITY_INSERT " + azureDBName + " ON " +
                             "INSERT INTO " + azureDBName + " (ID, VAL, X, Y, Z) VALUES";
@@ -103,7 +72,8 @@ public class AzureSqlHelper {
                 }
             }
 
-            statement.executeUpdate(sqlString);
+            PreparedStatement pstmt = connection.prepareStatement(sqlString);
+            pstmt.executeUpdate();
 
             logger.info("Data Inserted.");
         }
@@ -111,27 +81,17 @@ public class AzureSqlHelper {
             logger.warning("Exception " + e.getMessage());
             e.printStackTrace();
         }
-        finally {
-            try {
-                if (null != statement) statement.close();
-            }
-            catch (SQLException sqlException) {
-                logger.warning("SQL Exception " + sqlException.getMessage());
-                sqlException.printStackTrace();
-            }
-        }
     }
 
     public static void getAllData(Connection connection, String azureDBName) {
-        Statement statement = null;
         ResultSet resultSet = null;
 
         try {
-            statement = connection.createStatement();
-
             String sqlString = "SELECT * FROM " + azureDBName;
 
-            resultSet = statement.executeQuery(sqlString);
+            PreparedStatement pstmt = connection.prepareStatement(sqlString);
+
+            resultSet = pstmt.executeQuery();
             while(resultSet.next()){
                 int id  = resultSet.getInt("ID");
                 String value = resultSet.getString("VAL");
@@ -151,7 +111,6 @@ public class AzureSqlHelper {
         }
         finally {
             try {
-                if (null != statement) statement.close();
                 if (null != resultSet) resultSet.close();
             }
             catch (SQLException sqlException) {
@@ -162,16 +121,15 @@ public class AzureSqlHelper {
     }
 
     public static void getData(Connection connection, String azureDBName, Double xVal, Double yVal) {
-        Statement statement = null;
         ResultSet resultSet = null;
 
         try {
-            statement = connection.createStatement();
-
             String sqlString = "SELECT * FROM " + azureDBName +
                     " WHERE X=" + xVal.toString() + " AND Y=" + yVal.toString();
 
-            resultSet = statement.executeQuery(sqlString);
+            PreparedStatement pstmt = connection.prepareStatement(sqlString);
+
+            resultSet = pstmt.executeQuery();
             while(resultSet.next()){
                 int id  = resultSet.getInt("ID");
                 String value = resultSet.getString("VAL");
@@ -191,7 +149,6 @@ public class AzureSqlHelper {
         }
         finally {
             try {
-                if (null != statement) statement.close();
                 if (null != resultSet) resultSet.close();
             }
             catch (SQLException sqlException) {
@@ -202,15 +159,12 @@ public class AzureSqlHelper {
     }
 
     public static void updateData(Connection connection, String azureDBName, Double updatedVal, Double xVal, Double yVal) {
-        Statement statement = null;
-
         try {
-            statement = connection.createStatement();
-
             String sqlString = "UPDATE " + azureDBName + " SET VAL=" + updatedVal.toString() +
                             " WHERE X=" + xVal.toString() + " AND Y=" + yVal.toString();
 
-            statement.executeUpdate(sqlString);
+            PreparedStatement pstmt = connection.prepareStatement(sqlString);
+            pstmt.executeUpdate();
 
             logger.info("Data Updated.");
         }
@@ -218,27 +172,15 @@ public class AzureSqlHelper {
             logger.warning("Exception " + e.getMessage());
             e.printStackTrace();
         }
-        finally {
-            try {
-                if (null != statement) statement.close();
-            }
-            catch (SQLException sqlException) {
-                logger.warning("SQL Exception " + sqlException.getMessage());
-                sqlException.printStackTrace();
-            }
-        }
     }
 
     public static void deleteData(Connection connection, String azureDBName, Double xVal, Double yVal) {
-        Statement statement = null;
-
         try {
-            statement = connection.createStatement();
-
             String sqlString = "DELETE FROM " + azureDBName +
                     " WHERE X=" + xVal.toString() + " AND Y=" + yVal.toString();
 
-            statement.executeUpdate(sqlString);
+            PreparedStatement pstmt = connection.prepareStatement(sqlString);
+            pstmt.executeUpdate();
 
             logger.info("Data Deleted.");
         }
@@ -246,41 +188,20 @@ public class AzureSqlHelper {
             logger.warning("Exception " + e.getMessage());
             e.printStackTrace();
         }
-        finally {
-            try {
-                if (null != statement) statement.close();
-            }
-            catch (SQLException sqlException) {
-                logger.warning("SQL Exception " + sqlException.getMessage());
-                sqlException.printStackTrace();
-            }
-        }
     }
 
     public static void deleteAllData(Connection connection, String azureDBName) {
-        Statement statement = null;
-
         try {
-            statement = connection.createStatement();
-
             String sqlString = "DELETE FROM " + azureDBName;
 
-            statement.executeUpdate(sqlString);
+            PreparedStatement pstmt = connection.prepareStatement(sqlString);
+            pstmt.executeUpdate();
 
             logger.info("All Data Deleted.");
         }
         catch (Exception e) {
             logger.warning("Exception " + e.getMessage());
             e.printStackTrace();
-        }
-        finally {
-            try {
-                if (null != statement) statement.close();
-            }
-            catch (SQLException sqlException) {
-                logger.warning("SQL Exception " + sqlException.getMessage());
-                sqlException.printStackTrace();
-            }
         }
     }
 }
