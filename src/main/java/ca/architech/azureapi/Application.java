@@ -3,7 +3,7 @@ package ca.architech.azureapi;
 import ca.architech.azureapi.Consumer.Consumer;
 import ca.architech.azureapi.Model.Temperature;
 import ca.architech.azureapi.Producer.Producer;
-import ca.architech.azureapi.Setup.ServiceBusSetup;
+import ca.architech.azureapi.Setup.ServiceBusSetupImpl;
 import com.microsoft.windowsazure.exception.ServiceException;
 import com.microsoft.windowsazure.services.servicebus.ServiceBusContract;
 import com.microsoft.windowsazure.services.servicebus.models.QueueInfo;
@@ -19,9 +19,10 @@ public class Application {
     public static String topicName = "ServiceBusTopic";
 
     private static final Logger logger = Logger.getLogger(Application.class.getName());
+    private static ServiceBusSetupImpl serviceBusImpl = new ServiceBusSetupImpl();
 
     public static void main(String[] args) {
-        ServiceBusContract service = ServiceBusSetup.ServiceBusInit();
+        ServiceBusContract service = serviceBusImpl.ServiceBusInit();
 
         producerQueueExecution(service);
 
@@ -38,11 +39,11 @@ public class Application {
         QueueInfo queueInfo = null;
         try {
             if (service.listQueues().getItems().size() == 0) {
-                queueInfo = ServiceBusSetup.CreateServiceBusQueue(service);
+                queueInfo = serviceBusImpl.CreateServiceBusQueue(service);
                 logger.info("New Queue Created");
             }
             else {
-                queueInfo = ServiceBusSetup.GetServiceBusQueue(service);
+                queueInfo = serviceBusImpl.GetServiceBusQueue(service);
                 logger.info("Get Existing Queue");
             }
         }
@@ -65,7 +66,7 @@ public class Application {
                 logger.info("No Queue Found - Please Create New Queue");
             }
             else {
-                queueInfo = ServiceBusSetup.GetServiceBusQueue(service);
+                queueInfo = serviceBusImpl.GetServiceBusQueue(service);
                 logger.info("Queue FOUND");
             }
         }
@@ -82,7 +83,7 @@ public class Application {
         List<Temperature> receivedMessages = Consumer.ServiceBusDeQueue(service, queueInfo);
         logger.info("Consumer Data Extraction DONE");
 
-        ServiceBusSetup.DeleteServiceBusQueue(service, queueInfo);
+        serviceBusImpl.DeleteServiceBusQueue(service, queueInfo);
         logger.info("Queue Deleted.");
 
         Consumer.DatabaseManipulation(receivedMessages);
@@ -96,11 +97,11 @@ public class Application {
         TopicInfo topicInfo = null;
         try {
             if (service.listTopics().getItems().size() == 0) {
-                topicInfo = ServiceBusSetup.CreateServiceBusTopic(service);
+                topicInfo = serviceBusImpl.CreateServiceBusTopic(service);
                 logger.info("New Topic Created");
             }
             else {
-                topicInfo = ServiceBusSetup.GetServiceBusTopic(service);
+                topicInfo = serviceBusImpl.GetServiceBusTopic(service);
                 logger.info("Get Existing Topic");
             }
         }
@@ -159,11 +160,11 @@ public class Application {
         TopicInfo topicInfo = null;
         try {
             if (service.listTopics().getItems().size() == 0) {
-                topicInfo = ServiceBusSetup.CreateServiceBusTopic(service);
+                topicInfo = serviceBusImpl.CreateServiceBusTopic(service);
                 logger.info("No Topic Found - Please Create New Topic");
             }
             else {
-                topicInfo = ServiceBusSetup.GetServiceBusTopic(service);
+                topicInfo = serviceBusImpl.GetServiceBusTopic(service);
                 logger.info("Topic FOUND");
             }
         }
@@ -191,7 +192,7 @@ public class Application {
         Consumer.DeleteSubscription(service, topicInfo, "AllMessages");
         logger.info("Subscriptions Deleted");
 
-        ServiceBusSetup.DeleteServiceBusTopic(service, topicInfo);
+        serviceBusImpl.DeleteServiceBusTopic(service, topicInfo);
         logger.info("Topic Deleted");
 
         Consumer.DatabaseManipulation(AllMessages);

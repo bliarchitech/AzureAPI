@@ -1,7 +1,7 @@
 package ca.architech.azureapi.Consumer;
 
 import ca.architech.azureapi.Model.Temperature;
-import ca.architech.azureapi.Setup.AzureSqlSetup;
+import ca.architech.azureapi.Setup.AzureSqlSetupImpl;
 import com.microsoft.windowsazure.exception.ServiceException;
 import com.microsoft.windowsazure.services.servicebus.ServiceBusContract;
 import com.microsoft.windowsazure.services.servicebus.models.*;
@@ -130,27 +130,31 @@ public class Consumer {
     public static void DatabaseManipulation(List<Temperature> list) {
         String azureDBName = "Temperature";
 
-        Connection connection = AzureSqlSetup.connectionSetup();
+        AzureSqlSetupImpl azureSqlImpl = new AzureSqlSetupImpl();
 
-        AzureSqlHelper.createTable(connection, azureDBName);
+        Connection connection = azureSqlImpl.connectionSetup();
 
-        AzureSqlHelper.insertData(connection, azureDBName, list);
+        AzureSqlHelperImpl sqlExecution = new AzureSqlHelperImpl();
 
-        AzureSqlHelper.getAllData(connection, azureDBName);
+        sqlExecution.createTable(connection, azureDBName);
 
-        AzureSqlHelper.getData(connection, azureDBName, 0.58, 0.76);
+        sqlExecution.insertData(connection, azureDBName, list);
 
-        AzureSqlHelper.updateData(connection, azureDBName, 23.2, 0.58, 0.76);
-        AzureSqlHelper.getData(connection, azureDBName, 0.58, 0.76);
+        sqlExecution.getAllData(connection, azureDBName);
 
-        AzureSqlHelper.deleteData(connection, azureDBName, 0.58, 0.76);
-        AzureSqlHelper.getAllData(connection, azureDBName);
+        sqlExecution.getData(connection, azureDBName, 0.58, 0.76);
 
-        AzureSqlHelper.deleteAllData(connection, azureDBName);
-        AzureSqlHelper.getAllData(connection, azureDBName);
+        sqlExecution.updateData(connection, azureDBName, 23.2, 0.58, 0.76);
+        sqlExecution.getData(connection, azureDBName, 0.58, 0.76);
 
-        AzureSqlHelper.dropTable(connection, azureDBName);
+        sqlExecution.deleteData(connection, azureDBName, 0.58, 0.76);
+        sqlExecution.getAllData(connection, azureDBName);
 
-        AzureSqlSetup.connectionClose(connection);
+        sqlExecution.deleteAllData(connection, azureDBName);
+        sqlExecution.getAllData(connection, azureDBName);
+
+        sqlExecution.dropTable(connection, azureDBName);
+
+        azureSqlImpl.connectionClose(connection);
     }
 }
