@@ -19,14 +19,33 @@ public class AzureSqlSetup {
         String azureSqlHostName = "*.database.windows.net";
         String azureSqlTimeout = "30";
 
-        return "jdbc:sqlserver://" + azureSqlServer + ";" +
-                "database="+ azureSqlDatabase + ";" +
-                "user=" + azureSqlUser + ";" +
-                "password=" + azureSqlPassword + ";" +
-                "encrypt=" + azureSqlEncrypt + ";" +
-                "trustServerCertificate=" + azureSqlTrustServer + ";" +
-                "hostNameInCertificate=" + azureSqlHostName + ";" +
-                "loginTimeout=" + azureSqlTimeout + ";";
+        StringBuilder sb = new StringBuilder();
+        sb.append("jdbc:sqlserver://");
+        sb.append(azureSqlServer);
+        sb.append(";");
+        sb.append("database=");
+        sb.append(azureSqlDatabase);
+        sb.append(";");
+        sb.append("user=");
+        sb.append(azureSqlUser);
+        sb.append(";");
+        sb.append("password=");
+        sb.append(azureSqlPassword);
+        sb.append(";");
+        sb.append("encrypt=");
+        sb.append(azureSqlEncrypt);
+        sb.append(";");
+        sb.append("trustServerCertificate=");
+        sb.append(azureSqlTrustServer);
+        sb.append(";");
+        sb.append("hostNameInCertificate=");
+        sb.append(azureSqlHostName);
+        sb.append(";");
+        sb.append("loginTimeout=");
+        sb.append(azureSqlTimeout);
+        sb.append(";");
+
+        return sb.toString();
     }
 
     public static Connection connectionSetup() {

@@ -12,15 +12,16 @@ public class AzureSqlHelper {
 
     public static void createTable(Connection connection, String azureDBName) {
         try {
-            String sqlString =
-                            "CREATE TABLE " + azureDBName + " (" +
-                            "[ID] [int] IDENTITY(1,1) NOT NULL," +
-                            "[VAL] [nvarchar](50) NOT NULL," +
-                            "[X] [nvarchar](50) NOT NULL," +
-                            "[Y] [nvarchar](50) NOT NULL," +
-                            "[Z] [nvarchar](50) NOT NULL" + ")";
+            StringBuilder sqlBuilder = new StringBuilder();
+            sqlBuilder.append("CREATE TABLE ");
+            sqlBuilder.append(azureDBName);
+            sqlBuilder.append(" ([ID] [int] IDENTITY(1,1) NOT NULL,");
+            sqlBuilder.append("[VAL] [nvarchar](50) NOT NULL,");
+            sqlBuilder.append("[X] [nvarchar](50) NOT NULL,");
+            sqlBuilder.append("[Y] [nvarchar](50) NOT NULL,");
+            sqlBuilder.append("[Z] [nvarchar](50) NOT NULL)");
 
-            PreparedStatement pstmt = connection.prepareStatement(sqlString);
+            PreparedStatement pstmt = connection.prepareStatement(sqlBuilder.toString());
             pstmt.executeUpdate();
 
             logger.info("Table " + azureDBName + " Created.");
@@ -33,9 +34,11 @@ public class AzureSqlHelper {
 
     public static void dropTable(Connection connection, String azureDBName) {
         try {
-            String sqlString = "DROP TABLE " + azureDBName;
+            StringBuilder sqlBuilder = new StringBuilder();
+            sqlBuilder.append("DROP TABLE ");
+            sqlBuilder.append(azureDBName);
 
-            PreparedStatement pstmt = connection.prepareStatement(sqlString);
+            PreparedStatement pstmt = connection.prepareStatement(sqlBuilder.toString());
             pstmt.executeUpdate();
 
             logger.info("Table " + azureDBName + " Dropped.");
@@ -53,26 +56,35 @@ public class AzureSqlHelper {
         }
 
         try {
-            String sqlString =
-                            "SET IDENTITY_INSERT " + azureDBName + " ON " +
-                            "INSERT INTO " + azureDBName + " (ID, VAL, X, Y, Z) VALUES";
+            StringBuilder sqlBuilder = new StringBuilder();
+            sqlBuilder.append("SET IDENTITY_INSERT ");
+            sqlBuilder.append(azureDBName);
+            sqlBuilder.append(" ON ");
+            sqlBuilder.append("INSERT INTO ");
+            sqlBuilder.append(azureDBName);
+            sqlBuilder.append(" (ID, VAL, X, Y, Z) VALUES");
 
             for (int i = 0; i < list.size(); i++) {
+                sqlBuilder.append("(");
+                sqlBuilder.append(i+1);
+                sqlBuilder.append(", '");
+                sqlBuilder.append(list.get(i).getValue());
+                sqlBuilder.append("', '");
+                sqlBuilder.append(list.get(i).getX());
+                sqlBuilder.append("', '");
+                sqlBuilder.append(list.get(i).getY());
+                sqlBuilder.append("', '");
+                sqlBuilder.append(list.get(i).getZ());
+
                 if (i == list.size()-1) {
-                    sqlString += "(" + i+1 + ", '" + list.get(i).getValue() +
-                            "', '" + list.get(i).getX() +
-                            "', '" + list.get(i).getY() +
-                            "', '" + list.get(i).getZ() + "')";
+                    sqlBuilder.append("')");
                 }
                 else {
-                    sqlString += "(" + i+1 + ", '" + list.get(i).getValue() +
-                            "', '" + list.get(i).getX() +
-                            "', '" + list.get(i).getY() +
-                            "', '" + list.get(i).getZ() + "'),";
+                    sqlBuilder.append("'),");
                 }
             }
 
-            PreparedStatement pstmt = connection.prepareStatement(sqlString);
+            PreparedStatement pstmt = connection.prepareStatement(sqlBuilder.toString());
             pstmt.executeUpdate();
 
             logger.info("Data Inserted.");
@@ -87,9 +99,11 @@ public class AzureSqlHelper {
         ResultSet resultSet = null;
 
         try {
-            String sqlString = "SELECT * FROM " + azureDBName;
+            StringBuilder sqlBuilder = new StringBuilder();
+            sqlBuilder.append("SELECT * FROM ");
+            sqlBuilder.append(azureDBName);
 
-            PreparedStatement pstmt = connection.prepareStatement(sqlString);
+            PreparedStatement pstmt = connection.prepareStatement(sqlBuilder.toString());
 
             resultSet = pstmt.executeQuery();
             while(resultSet.next()){
@@ -124,10 +138,15 @@ public class AzureSqlHelper {
         ResultSet resultSet = null;
 
         try {
-            String sqlString = "SELECT * FROM " + azureDBName +
-                    " WHERE X=" + xVal.toString() + " AND Y=" + yVal.toString();
+            StringBuilder sqlBuilder = new StringBuilder();
+            sqlBuilder.append("SELECT * FROM ");
+            sqlBuilder.append(azureDBName);
+            sqlBuilder.append(" WHERE X=");
+            sqlBuilder.append(xVal.toString());
+            sqlBuilder.append(" AND Y=");
+            sqlBuilder.append(yVal.toString());
 
-            PreparedStatement pstmt = connection.prepareStatement(sqlString);
+            PreparedStatement pstmt = connection.prepareStatement(sqlBuilder.toString());
 
             resultSet = pstmt.executeQuery();
             while(resultSet.next()){
@@ -160,10 +179,17 @@ public class AzureSqlHelper {
 
     public static void updateData(Connection connection, String azureDBName, Double updatedVal, Double xVal, Double yVal) {
         try {
-            String sqlString = "UPDATE " + azureDBName + " SET VAL=" + updatedVal.toString() +
-                            " WHERE X=" + xVal.toString() + " AND Y=" + yVal.toString();
+            StringBuilder sqlBuilder = new StringBuilder();
+            sqlBuilder.append("UPDATE ");
+            sqlBuilder.append(azureDBName);
+            sqlBuilder.append(" SET VAL=");
+            sqlBuilder.append(updatedVal.toString());
+            sqlBuilder.append(" WHERE X=");
+            sqlBuilder.append(xVal.toString());
+            sqlBuilder.append(" AND Y=");
+            sqlBuilder.append(yVal.toString());
 
-            PreparedStatement pstmt = connection.prepareStatement(sqlString);
+            PreparedStatement pstmt = connection.prepareStatement(sqlBuilder.toString());
             pstmt.executeUpdate();
 
             logger.info("Data Updated.");
@@ -176,10 +202,15 @@ public class AzureSqlHelper {
 
     public static void deleteData(Connection connection, String azureDBName, Double xVal, Double yVal) {
         try {
-            String sqlString = "DELETE FROM " + azureDBName +
-                    " WHERE X=" + xVal.toString() + " AND Y=" + yVal.toString();
+            StringBuilder sqlBuilder = new StringBuilder();
+            sqlBuilder.append("DELETE FROM ");
+            sqlBuilder.append(azureDBName);
+            sqlBuilder.append(" WHERE X=");
+            sqlBuilder.append(xVal.toString());
+            sqlBuilder.append(" AND Y=");
+            sqlBuilder.append(yVal.toString());
 
-            PreparedStatement pstmt = connection.prepareStatement(sqlString);
+            PreparedStatement pstmt = connection.prepareStatement(sqlBuilder.toString());
             pstmt.executeUpdate();
 
             logger.info("Data Deleted.");
@@ -192,9 +223,11 @@ public class AzureSqlHelper {
 
     public static void deleteAllData(Connection connection, String azureDBName) {
         try {
-            String sqlString = "DELETE FROM " + azureDBName;
+            StringBuilder sqlBuilder = new StringBuilder();
+            sqlBuilder.append("DELETE FROM ");
+            sqlBuilder.append(azureDBName);
 
-            PreparedStatement pstmt = connection.prepareStatement(sqlString);
+            PreparedStatement pstmt = connection.prepareStatement(sqlBuilder.toString());
             pstmt.executeUpdate();
 
             logger.info("All Data Deleted.");
