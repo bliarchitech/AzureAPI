@@ -15,40 +15,45 @@ import java.util.logging.Logger;
 
 public class Application {
 
-    public static String queueName = "ServiceBusQueue";
-    public static String topicName = "ServiceBusTopic";
-
     private static final Logger logger = Logger.getLogger(Application.class.getName());
     private static ServiceBusSetupImpl serviceBusImpl = new ServiceBusSetupImpl();
 
     public static void main(String[] args) {
         ServiceBusContract service = serviceBusImpl.ServiceBusInit();
 
-        producerQueueExecution(service);
+        String queueName = "ServiceBusQueue";
+        String topicName = "ServiceBusTopic";
 
-        consumerQueueExecution(service);
+        producerQueueExecution(service, queueName);
 
-        producerTopicExecution(service);
+        consumerQueueExecution(service, queueName);
 
-        consumerTopicExecution(service);
+        producerTopicExecution(service, topicName);
+
+        consumerTopicExecution(service, topicName);
     }
 
-    public static void producerQueueExecution(ServiceBusContract service) {
+    public static void producerQueueExecution(ServiceBusContract service, String queueName) {
         logger.info("Executing Queue Controller...");
 
         QueueInfo queueInfo = null;
         try {
             if (service.listQueues().getItems().size() == 0) {
-                queueInfo = serviceBusImpl.CreateServiceBusQueue(service);
+                queueInfo = serviceBusImpl.CreateServiceBusQueue(service, queueName);
                 logger.info("New Queue Created");
             }
-            else if (service.listQueues().getItems().size() == 1) {
-                queueInfo = serviceBusImpl.GetServiceBusQueue(service);
-                logger.info("Get Existing Queue");
-            }
             else {
-                logger.warning("Only One Queue Is Allowed");
-                System.exit(-1);
+                List<QueueInfo> queueList = service.listQueues().getItems();
+                for (int i = 0; i < queueList.size(); i++) {
+                    if (queueList.get(i).getPath().equalsIgnoreCase(queueName)) {
+                        queueInfo = serviceBusImpl.GetServiceBusQueue(service, queueName);
+                        logger.info("Get Existing Queue: " + queueName);
+                    }
+                }
+                if (queueInfo == null) {
+                    queueInfo = serviceBusImpl.CreateServiceBusQueue(service, queueName);
+                    logger.warning("Queue does not exist - Creating new queue");
+                }
             }
         }
         catch (ServiceException e) {
@@ -61,21 +66,26 @@ public class Application {
         logger.info("Queue Controller Execution DONE");
     }
 
-    public static void consumerQueueExecution(ServiceBusContract service) {
+    public static void consumerQueueExecution(ServiceBusContract service, String queueName) {
         logger.info("Executing Queue Consumer...");
 
         QueueInfo queueInfo = null;
         try {
             if (service.listQueues().getItems().size() == 0) {
-                logger.info("No Queue Found - Please Create New Queue");
-            }
-            else if (service.listQueues().getItems().size() == 1) {
-                queueInfo = serviceBusImpl.GetServiceBusQueue(service);
-                logger.info("Queue FOUND");
+                logger.warning("No Queue Found - Please Create New Queue");
             }
             else {
-                logger.warning("Only One Queue Is Allowed");
-                System.exit(-1);
+                List<QueueInfo> queueList = service.listQueues().getItems();
+                for (int i = 0; i < queueList.size(); i++) {
+                    if (queueList.get(i).getPath().equalsIgnoreCase(queueName)) {
+                        queueInfo = serviceBusImpl.GetServiceBusQueue(service, queueName);
+                        logger.info("Get Existing Queue: " + queueName);
+                    }
+                }
+                if (queueInfo == null) {
+                    logger.warning("No Queue Found - Please Create New Queue");
+                    System.exit(-1);
+                }
             }
         }
         catch (ServiceException e) {
@@ -99,22 +109,27 @@ public class Application {
         logger.info("Queue Consumer Execution DONE");
     }
 
-    public static void producerTopicExecution(ServiceBusContract service) {
+    public static void producerTopicExecution(ServiceBusContract service, String topicName) {
         logger.info("Executing Topic Controller...");
 
         TopicInfo topicInfo = null;
         try {
             if (service.listTopics().getItems().size() == 0) {
-                topicInfo = serviceBusImpl.CreateServiceBusTopic(service);
+                topicInfo = serviceBusImpl.CreateServiceBusTopic(service, topicName);
                 logger.info("New Topic Created");
             }
-            else if (service.listTopics().getItems().size() == 1) {
-                topicInfo = serviceBusImpl.GetServiceBusTopic(service);
-                logger.info("Get Existing Topic");
-            }
             else {
-                logger.warning("Only One Topic Is Allowed");
-                System.exit(-1);
+                List<TopicInfo> topicList = service.listTopics().getItems();
+                for (int i = 0; i < topicList.size(); i++) {
+                    if (topicList.get(i).getPath().equalsIgnoreCase(topicName)) {
+                        topicInfo = serviceBusImpl.GetServiceBusTopic(service, topicName);
+                        logger.info("Get Existing Topic: " + topicName);
+                    }
+                }
+                if (topicInfo == null) {
+                    topicInfo = serviceBusImpl.CreateServiceBusTopic(service, topicName);
+                    logger.info("Topic does not exist - Creating new topic");
+                }
             }
         }
         catch (ServiceException e) {
@@ -166,22 +181,26 @@ public class Application {
         logger.info("Topic Controller Execution DONE");
     }
 
-    public static void consumerTopicExecution(ServiceBusContract service) {
+    public static void consumerTopicExecution(ServiceBusContract service, String topicName) {
         logger.info("Executing Topic Consumer...");
 
         TopicInfo topicInfo = null;
         try {
             if (service.listTopics().getItems().size() == 0) {
-                topicInfo = serviceBusImpl.CreateServiceBusTopic(service);
                 logger.info("No Topic Found - Please Create New Topic");
             }
-            else if (service.listTopics().getItems().size() == 1) {
-                topicInfo = serviceBusImpl.GetServiceBusTopic(service);
-                logger.info("Topic FOUND");
-            }
             else {
-                logger.warning("Only One Topic Is Allowed");
-                System.exit(-1);
+                List<TopicInfo> topicList = service.listTopics().getItems();
+                for (int i = 0; i < topicList.size(); i++) {
+                    if (topicList.get(i).getPath().equalsIgnoreCase(topicName)) {
+                        topicInfo = serviceBusImpl.GetServiceBusTopic(service, topicName);
+                        logger.info("Get Existing Topic: " + topicName);
+                    }
+                }
+                if (topicInfo == null) {
+                    topicInfo = serviceBusImpl.CreateServiceBusTopic(service, topicName);
+                    logger.info("No Topic Found - Please Create New Topic");
+                }
             }
         }
         catch (ServiceException e) {

@@ -1,6 +1,5 @@
 package ca.architech.azureapi.Utilities;
 
-import ca.architech.azureapi.Application;
 import com.microsoft.windowsazure.Configuration;
 import com.microsoft.windowsazure.exception.ServiceException;
 import com.microsoft.windowsazure.services.servicebus.ServiceBusConfiguration;
@@ -34,8 +33,8 @@ public class ServiceBusSetupImpl implements ServiceBusSetup {
     }
 
     @Override
-    public QueueInfo CreateServiceBusQueue(ServiceBusContract service) {
-        QueueInfo queueInfo = new QueueInfo(Application.queueName);
+    public QueueInfo CreateServiceBusQueue(ServiceBusContract service, String queueName) {
+        QueueInfo queueInfo = new QueueInfo(queueName);
         long maxSizeInMegabytes = 5120;
         queueInfo.setMaxSizeInMegabytes(maxSizeInMegabytes);
 
@@ -52,11 +51,11 @@ public class ServiceBusSetupImpl implements ServiceBusSetup {
     }
 
     @Override
-    public QueueInfo GetServiceBusQueue(ServiceBusContract service) {
+    public QueueInfo GetServiceBusQueue(ServiceBusContract service, String queueName) {
         QueueInfo queueInfo = null;
 
         try {
-            queueInfo = service.getQueue(Application.queueName).getValue();
+            queueInfo = service.getQueue(queueName).getValue();
         }
         catch (ServiceException e) {
             logger.warning("ServiceException encountered: \n" + e.getMessage());
@@ -78,8 +77,8 @@ public class ServiceBusSetupImpl implements ServiceBusSetup {
     }
 
     @Override
-    public TopicInfo CreateServiceBusTopic(ServiceBusContract service) {
-        TopicInfo topicInfo = new TopicInfo(Application.topicName);
+    public TopicInfo CreateServiceBusTopic(ServiceBusContract service, String topicName) {
+        TopicInfo topicInfo = new TopicInfo(topicName);
         long maxSizeInMegabytes = 5120;
         topicInfo.setMaxSizeInMegabytes(maxSizeInMegabytes);
 
@@ -96,11 +95,11 @@ public class ServiceBusSetupImpl implements ServiceBusSetup {
     }
 
     @Override
-    public TopicInfo GetServiceBusTopic(ServiceBusContract service) {
+    public TopicInfo GetServiceBusTopic(ServiceBusContract service, String topicName) {
         TopicInfo topicInfo = null;
 
         try {
-            topicInfo = service.getTopic(Application.topicName).getValue();
+            topicInfo = service.getTopic(topicName).getValue();
         }
         catch (ServiceException e) {
             logger.warning("ServiceException encountered: \n" + e.getMessage());
