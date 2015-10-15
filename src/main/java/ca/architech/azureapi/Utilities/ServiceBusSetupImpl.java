@@ -1,4 +1,4 @@
-package ca.architech.azureapi.Setup;
+package ca.architech.azureapi.Utilities;
 
 import ca.architech.azureapi.Application;
 import com.microsoft.windowsazure.Configuration;

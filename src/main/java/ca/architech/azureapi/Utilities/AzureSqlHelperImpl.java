@@ -1,4 +1,4 @@
-package ca.architech.azureapi.Consumer;
+package ca.architech.azureapi.Utilities;
 
 import ca.architech.azureapi.Model.Temperature;
 

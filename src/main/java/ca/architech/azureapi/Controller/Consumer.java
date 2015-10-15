@@ -1,7 +1,8 @@
-package ca.architech.azureapi.Consumer;
+package ca.architech.azureapi.Controller;
 
 import ca.architech.azureapi.Model.Temperature;
-import ca.architech.azureapi.Setup.AzureSqlSetupImpl;
+import ca.architech.azureapi.Utilities.AzureSqlHelperImpl;
+import ca.architech.azureapi.Utilities.AzureSqlSetupImpl;
 import com.microsoft.windowsazure.exception.ServiceException;
 import com.microsoft.windowsazure.services.servicebus.ServiceBusContract;
 import com.microsoft.windowsazure.services.servicebus.models.*;

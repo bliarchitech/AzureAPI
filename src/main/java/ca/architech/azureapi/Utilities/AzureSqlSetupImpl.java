@@ -1,4 +1,4 @@
-package ca.architech.azureapi.Setup;
+package ca.architech.azureapi.Utilities;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -1,4 +1,4 @@
-package ca.architech.azureapi.Producer;
+package ca.architech.azureapi.Controller;
 
 import ca.architech.azureapi.Model.Temperature;
 import com.microsoft.windowsazure.exception.ServiceException;

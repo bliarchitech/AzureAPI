@@ -1,9 +1,9 @@
 package ca.architech.azureapi;
 
-import ca.architech.azureapi.Consumer.Consumer;
+import ca.architech.azureapi.Controller.Consumer;
 import ca.architech.azureapi.Model.Temperature;
-import ca.architech.azureapi.Producer.Producer;
-import ca.architech.azureapi.Setup.ServiceBusSetupImpl;
+import ca.architech.azureapi.Controller.Producer;
+import ca.architech.azureapi.Utilities.ServiceBusSetupImpl;
 import com.microsoft.windowsazure.exception.ServiceException;
 import com.microsoft.windowsazure.services.servicebus.ServiceBusContract;
 import com.microsoft.windowsazure.services.servicebus.models.QueueInfo;
@@ -34,7 +34,7 @@ public class Application {
     }
 
     public static void producerQueueExecution(ServiceBusContract service) {
-        logger.info("Executing Queue Producer...");
+        logger.info("Executing Queue Controller...");
 
         QueueInfo queueInfo = null;
         try {
@@ -54,7 +54,7 @@ public class Application {
 
         Producer.ServiceBusEnQueue(service, queueInfo);
 
-        logger.info("Queue Producer Execution DONE");
+        logger.info("Queue Controller Execution DONE");
     }
 
     public static void consumerQueueExecution(ServiceBusContract service) {
@@ -92,7 +92,7 @@ public class Application {
     }
 
     public static void producerTopicExecution(ServiceBusContract service) {
-        logger.info("Executing Topic Producer...");
+        logger.info("Executing Topic Controller...");
 
         TopicInfo topicInfo = null;
         try {
@@ -151,7 +151,7 @@ public class Application {
 
         Producer.ServiceBusTopicSubscribe(service, topicInfo);
 
-        logger.info("Topic Producer Execution DONE");
+        logger.info("Topic Controller Execution DONE");
     }
 
     public static void consumerTopicExecution(ServiceBusContract service) {

@@ -1,4 +1,4 @@
-package ca.architech.azureapi.Producer;
+package ca.architech.azureapi.Controller;
 
 import ca.architech.azureapi.Model.Temperature;
 import org.w3c.dom.Document;

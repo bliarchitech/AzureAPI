@@ -1,4 +1,4 @@
-package ca.architech.azureapi.Setup;
+package ca.architech.azureapi.Utilities;
 
 import com.microsoft.windowsazure.services.servicebus.ServiceBusContract;
 import com.microsoft.windowsazure.services.servicebus.models.QueueInfo;
