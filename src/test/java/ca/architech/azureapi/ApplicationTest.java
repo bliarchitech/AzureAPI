@@ -36,7 +36,7 @@ public class ApplicationTest {
             Document doc = dBuilder.parse(xmlFile);
             doc.getDocumentElement().normalize();
             NodeList contentItemSet = doc.getElementsByTagName("collection_item");
-            Assert.assertFalse(contentItemSet.getLength() == 0);
+            Assert.assertNotNull(contentItemSet);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -47,7 +47,7 @@ public class ApplicationTest {
     @Test
     public void TemperatureListNotEmpty() {
         List<Temperature> list = XmlHandler.TemperatureList();
-        Assert.assertTrue(list.size() != 0);
+        Assert.assertNotNull(list);
         logger.info("TemperatureListNotEmpty: PASS");
     }
 
@@ -55,10 +55,14 @@ public class ApplicationTest {
     public void TemperatureListNoDataMissing() {
         List<Temperature> list = XmlHandler.TemperatureList();
         for (int i = 0; i < list.size(); i++) {
-            Assert.assertFalse(list.get(i).getValue() == null || list.get(i).getValue() == "");
-            Assert.assertFalse(list.get(i).getX() == null || list.get(i).getX() == "");
-            Assert.assertFalse(list.get(i).getY() == null || list.get(i).getY() == "");
-            Assert.assertFalse(list.get(i).getZ() == null || list.get(i).getZ() == "");
+            Assert.assertNotEquals(null, list.get(i).getValue());
+            Assert.assertNotEquals("", list.get(i).getValue());
+            Assert.assertNotEquals(null, list.get(i).getX());
+            Assert.assertNotEquals("", list.get(i).getX());
+            Assert.assertNotEquals(null, list.get(i).getY());
+            Assert.assertNotEquals("", list.get(i).getY());
+            Assert.assertNotEquals(null, list.get(i).getZ());
+            Assert.assertNotEquals("", list.get(i).getZ());
         }
         logger.info("TemperatureListNoDataMissing: PASS");
     }
@@ -75,6 +79,20 @@ public class ApplicationTest {
             System.exit(-1);
         }
         logger.info("MoreThanTwoServiceBusQueues: PASS");
+    }
+
+    @Test
+    public void MoreThanTwoServiceBusTopics() {
+        ServiceBusSetupImpl serviceBusImpl = new ServiceBusSetupImpl();
+        ServiceBusContract service = serviceBusImpl.ServiceBusInit();
+        try {
+            Assert.assertFalse(service.listTopics().getItems().size() > 1);
+        }
+        catch (ServiceException e) {
+            logger.warning("ServiceException encountered: \n" + e.getMessage());
+            System.exit(-1);
+        }
+        logger.info("MoreThanTwoServiceBusTopics: PASS");
     }
 
 }
