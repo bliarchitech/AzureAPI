@@ -67,32 +67,4 @@ public class ApplicationTest {
         logger.info("TemperatureListNoDataMissing: PASS");
     }
 
-    @Test
-    public void MoreThanTwoServiceBusQueues() {
-        ServiceBusSetupImpl serviceBusImpl = new ServiceBusSetupImpl();
-        ServiceBusContract service = serviceBusImpl.ServiceBusInit();
-        try {
-            Assert.assertFalse(service.listQueues().getItems().size() > 1);
-        }
-        catch (ServiceException e) {
-            logger.warning("ServiceException encountered: \n" + e.getMessage());
-            System.exit(-1);
-        }
-        logger.info("MoreThanTwoServiceBusQueues: PASS");
-    }
-
-    @Test
-    public void MoreThanTwoServiceBusTopics() {
-        ServiceBusSetupImpl serviceBusImpl = new ServiceBusSetupImpl();
-        ServiceBusContract service = serviceBusImpl.ServiceBusInit();
-        try {
-            Assert.assertFalse(service.listTopics().getItems().size() > 1);
-        }
-        catch (ServiceException e) {
-            logger.warning("ServiceException encountered: \n" + e.getMessage());
-            System.exit(-1);
-        }
-        logger.info("MoreThanTwoServiceBusTopics: PASS");
-    }
-
 }
