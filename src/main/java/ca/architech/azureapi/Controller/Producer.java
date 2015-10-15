@@ -14,6 +14,11 @@ public class Producer {
 
     public static void ServiceBusEnQueue(ServiceBusContract service, QueueInfo queueInfo) {
         List<Temperature> list = XmlHandler.TemperatureList();
+        if (list.isEmpty()) {
+            logger.warning("Temperature List is Empty");
+            System.exit(-1);
+        }
+
         try {
             for (int i = 0; i < list.size(); i++) {
                 BrokeredMessage message = new BrokeredMessage("Temperature Item " + i);
@@ -35,6 +40,10 @@ public class Producer {
 
     public static void ServiceBusTopicSubscribe(ServiceBusContract service, TopicInfo topicInfo) {
         List<Temperature> list = XmlHandler.TemperatureList();
+        if (list.isEmpty()) {
+            logger.warning("Temperature List is Empty");
+            System.exit(-1);
+        }
 
         try {
             for (int i = 0; i < list.size(); i++) {

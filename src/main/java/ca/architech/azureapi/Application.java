@@ -42,9 +42,13 @@ public class Application {
                 queueInfo = serviceBusImpl.CreateServiceBusQueue(service);
                 logger.info("New Queue Created");
             }
-            else {
+            else if (service.listQueues().getItems().size() == 1) {
                 queueInfo = serviceBusImpl.GetServiceBusQueue(service);
                 logger.info("Get Existing Queue");
+            }
+            else {
+                logger.warning("Only One Queue Is Allowed");
+                System.exit(-1);
             }
         }
         catch (ServiceException e) {
@@ -65,9 +69,13 @@ public class Application {
             if (service.listQueues().getItems().size() == 0) {
                 logger.info("No Queue Found - Please Create New Queue");
             }
-            else {
+            else if (service.listQueues().getItems().size() == 1) {
                 queueInfo = serviceBusImpl.GetServiceBusQueue(service);
                 logger.info("Queue FOUND");
+            }
+            else {
+                logger.warning("Only One Queue Is Allowed");
+                System.exit(-1);
             }
         }
         catch (ServiceException e) {
@@ -100,9 +108,13 @@ public class Application {
                 topicInfo = serviceBusImpl.CreateServiceBusTopic(service);
                 logger.info("New Topic Created");
             }
-            else {
+            else if (service.listTopics().getItems().size() == 1) {
                 topicInfo = serviceBusImpl.GetServiceBusTopic(service);
                 logger.info("Get Existing Topic");
+            }
+            else {
+                logger.warning("Only One Topic Is Allowed");
+                System.exit(-1);
             }
         }
         catch (ServiceException e) {
@@ -163,9 +175,13 @@ public class Application {
                 topicInfo = serviceBusImpl.CreateServiceBusTopic(service);
                 logger.info("No Topic Found - Please Create New Topic");
             }
-            else {
+            else if (service.listTopics().getItems().size() == 1) {
                 topicInfo = serviceBusImpl.GetServiceBusTopic(service);
                 logger.info("Topic FOUND");
+            }
+            else {
+                logger.warning("Only One Topic Is Allowed");
+                System.exit(-1);
             }
         }
         catch (ServiceException e) {
